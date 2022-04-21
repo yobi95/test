@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-idxparent">{% endblock %}
+{% block title %}<title i18nkey='title_sl'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/statuslist.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="layui-row articlediv">
+    <fieldset class="layui-elem-field">
+        <legend i18nkey='qlegend'></legend>
+        <div class="layui-field-box timebox">
+            <input type="text" id="timese_s" i18nkey='datese_s' i18nattr='placeholder'>
+            <button id="btn-clear_s" class="layui-btn layui-btn-primary layui-btn-xs" i18nkey='clear'></button>
+        </div>
+        <div class="layui-field-box timebox">
+            <input type="text" id="timese_e" i18nkey='datese_e' i18nattr='placeholder'>
+            <button id="btn-clear_e" class="layui-btn layui-btn-primary layui-btn-xs" i18nkey='clear'></button>
+        </div>
+        <label i18nkey='type_sln'></label>
+        <select class='slt_type' id="slt_type" onchange="typeChanged(this.options[this.options.selectedIndex].value)" >
+            <option value="temperature" i18nkey='temperature_n'></option>
+            <option value="skin" i18nkey='skin_n'></option>
+            <option value="meal" i18nkey='meal_n'></option>
+            <option value="nap" i18nkey='nap_n'></option>
+            <option value="diaper" i18nkey='diaper_n'></option>
+            <option value="health" i18nkey='health_n'></option>
+            <option value="perform" i18nkey='perform_n'></option>
+        </select>
+    </fieldset>
+    
+    <div class="tdiv2">
+        <div class="tdiv1">
+            <table id="statuslist" lay-filter="statuslist" class='datatable'></table>
+        </div>
+    </div>
+    
+    <div id="pagebar1"></div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script src="{{ url_for('static',filename='js/layui/layui.js') }}"></script>
+<script>
+    var startt = null;
+    var endt = null;
+    var statustype='temperature';
+    var _page=1;
+    var _limit=10;
+    
+    function typeChanged(val){
+        statustype = val;
+        updateColFormat(statustype);
+        showdata();
+    }
+    
+    function updateColFormat(val){
+        if(["temperature","perform"].includes(val)){
+            confset = {
+            elem: '#statuslist',
+            limit: _limit,
+            page: false //开启分页
+            ,
+            limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            cols:   [
+                    [ //表头
+                        {
+                            field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',width:60,
+                            sort: true
+                        },
+                        {
+                            field: 'child_no', title: $.i18n.prop('child_id'), fixed: 'left',width:100,
+                            sort: true
+                        },
+                        {
+                            field: 'name', title: $.i18n.prop('name_english'), fixed: 'left',width:100,
+                            sort: true
+                        },
+                        {
+                            field: 'name_chi', title: $.i18n.prop('name_chi'), fixed: 'left',width:60,
+                            sort: true
+                        },
+                        {
+                            field: 'time', title: $.i18n.prop('time'), fixed: 'left',
+                            sort: true
+                        },
+                        {
+                            field: 'status_show', title: $.i18n.prop(statustype+'_sn'), fixed: 'left',width:100,
+                            sort: true
+                        },
+                        {
+                            field: 'staff', title: $.i18n.prop('staff'), fixed: 'left',width:100,
+                            sort: true
+                        }/*,
+                        {
+                            field: 'remark', title: $.i18n.prop('remark'), fixed: 'left',
+                            sort: true
+                        }*/
+                    ]
+                ]
+            }
+        }else if(["nap","health","diaper"].includes(val)){
+            
+            confset = {
+            elem: '#statuslist',
+            limit: _limit,
+            page: false //开启分页
+            ,
+            limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            cols: [
+            [ //表头
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',width:60,
+                    sort: true
+                },
+                {
+                    field: 'name', title: $.i18n.prop('name_english'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'child_no', title: $.i18n.prop('child_id'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'time', title: $.i18n.prop('time'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'status_show', title: $.i18n.prop(statustype+'_sn'), fixed: 'left',width:100,
+                    sort: true
+                }, 
+                {
+                    field: 'substatus_show', title: $.i18n.prop('substatus_show'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'staff', title: $.i18n.prop('staff'), fixed: 'left',width:100,
+                    sort: true
+                }/*,
+                {
+                    field: 'remark', title: $.i18n.prop('remark'), fixed: 'left',
+                    sort: true
+                }*/
+            ]
+            ]
+            }
+        }else{
+            confset = {
+            elem: '#statuslist',
+            limit: _limit,
+            page: false //开启分页
+            ,
+            limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            cols: [
+            [ //表头
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',width:60,
+                    sort: true
+                },
+                {
+                    field: 'name', title: $.i18n.prop('name_english'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'child_no', title: $.i18n.prop('child_id'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'time', title: $.i18n.prop('time'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'status_show', title: $.i18n.prop(statustype+'_sn'), fixed: 'left',width:100,
+                    sort: true
+                },                {
+                    field: 'substatus_show', title: $.i18n.prop('substatus_show'), fixed: 'left',width:100,
+                    sort: true
+                },                {
+                    field: 'substatus_detail_show', title: $.i18n.prop('substatus_detail_show'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'staff', title: $.i18n.prop('staff'), fixed: 'left',width:100,
+                    sort: true
+                }/*,
+                {
+                    field: 'remark', title: $.i18n.prop('remark'), fixed: 'left',
+                    sort: true
+                }*/
+            ]
+            ]
+            }
+        }
+    }
+    
+    layui.use('element', function () {
+            var element = layui.element;
+        });
+   
+    confset = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false //开启分页
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols:   [
+            [ //表头
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',width:60,
+                    sort: true
+                },
+                {
+                    field: 'name', title: $.i18n.prop('name_english'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'child_no', title: $.i18n.prop('child_id'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'time', title: $.i18n.prop('time'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'status_show', title: $.i18n.prop(statustype+'_sn'), fixed: 'left',width:100,
+                    sort: true
+                },
+                {
+                    field: 'staff', title: $.i18n.prop('staff'), fixed: 'left',width:100,
+                    sort: true
+                }/*,
+                {
+                    field: 'remark', title: $.i18n.prop('remark'), fixed: 'left',
+                    sort: true
+                }*/
+            ]
+        ]
+        /* 
+            {
+                field: 'count', title: $.i18n.prop('count'), fixed: 'left',width:100,
+                sort: true
+            },
+        */
+    }
+    confset2 = {
+            elem: 'pagebar1' //注意，这里的 test1 是 ID，不用加 # 号
+            ,limit:_limit
+            ,count:100
+            ,prev:$.i18n.prop('prev')
+            ,next:$.i18n.prop('next')
+            ,jump: function(obj, first){
+                //obj包含了当前分页的所有参数，比如：
+                _page=obj.curr;
+                _limit=obj.limit;
+                
+                //首次不执行
+                if(!first){
+                //do something
+                showdata();
+                }
+            }
+        }
+    var table =  null;
+    var laypage = null;
+
+    layui.use(['laydate', 'table', 'laypage'], function () {
+        table = layui.table;
+        table.render(confset);
+        var laydate1 = layui.laydate;
+        var laydate2 = layui.laydate;
+        // 渲染时间选择器
+        laydate1.render({
+            elem: '#timese_s'
+            , type: 'date' //默认，可不填
+            , done: function (value, date, endDate) { 
+                startt = value;
+                if(startt==''){
+                    startt=null;
+                }
+                showdata();
+            }
+        });
+        laydate2.render({
+            elem: '#timese_e'
+            , type: 'date' //默认，可不填
+            , done: function (value, date, endDate) { 
+                endt = value;
+                if(endt==''){
+                    endt=null;
+                }
+                showdata();
+            }
+        });
+        $(document).on('click', '#btn-clear_s', function () {
+            startt=null;
+            showdata();
+        });
+        $(document).on('click', '#btn-clear_e', function () {
+            endt=null;
+            showdata();
+        });
+        laypage = layui.laypage;
+        //执行一个laypage实例
+        laypage.render(confset2);
+        showdata();
+    });
+    
+    function showdata(){
+        var _ip_ep = '/api/children/statuses';
+        var _params = {
+            'page':_page,
+            'limit':_limit,
+            'type':statustype,
+            'secret_key': getCookie('secret_key'),
+            'keys': 'page,limit,type,secret_key'
+        }
+        if(startt!=null){
+            _params['startt']=startt;
+            _params['keys'] += ',startt';
+        }
+        if(endt!=null){
+            _params['endt'] = endt;
+            _params['keys'] += ',endt';
+        }
+        _params = sign(_params);
+        var resdata = null;
+        $.ajax({
+                async:true,
+                url:_ip_ep,
+                type:'GET',
+                data:_params,
+                success:function(data){
+                    if(data['code']!=0){
+                        alert("Error!\n"+data['msg']);
+                        return ;
+                    }
+                    var valn = 'val';
+                    if(i18nLanguage=='zh-TW'){
+                        valn = 'val_chi';
+                    }
+                    var dlen = data['data'].length;
+                    for(var di=0; di<dlen; di++){
+                        if(statustype=='temperature'){
+                            data['data'][di]['status_show'] = data['data'][di]['status'];
+                        }else {
+                            data['data'][di]['status_show'] = data['data'][di]['status'][valn];
+                        }
+                        
+                        if(statustype =='health' || statustype == 'nap' || statustype == 'diaper'){
+                            data['data'][di]['substatus_show'] = data['data'][di]['substatus'][valn];
+                        }else if(statustype == 'skin'){
+                            data['data'][di]['substatus_show'] = data['data'][di]['substatus'][valn];
+                            data['data'][di]['substatus_detail_show'] = data['data'][di]['substatus_detail'][valn];
+                        }else if(statustype == 'meal'){
+                            data['data'][di]['substatus_show'] = data['data'][di]['substatus'][valn];
+                            data['data'][di]['substatus_detail_show'] = data['data'][di]['substatus_detail'][valn];
+                        }
+                    
+                    }
+                    confset.data = data['data'];
+                    confset2.count=data['count'];
+                    confset.cols[0][3]['title'] = $.i18n.prop(statustype+'_n');
+                    table.render(confset);
+                    laypage.render(confset2);
+                },
+                error:function(xhr,status,error){
+                    alert('Error: '+status.toString());
+                }
+            });
+    }
+</script>
+{% endblock %}

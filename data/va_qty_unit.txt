@@ -1,0 +1,5 @@
+id;value;value_chi
+3110;Ml;毫升
+3120;Bowl;碗
+3130;Spoon;匙
+3140;Portion;份

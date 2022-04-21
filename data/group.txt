@@ -1,0 +1,7 @@
+id;smon;emon;name
+0;0;6;0-6 months
+1;7;12;7-12 months
+2;13;18;13-18 months
+3;19;24;19-24 months
+4;25;30;25-30 months
+5;31;36;31-36 months

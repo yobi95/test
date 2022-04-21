@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}<title>error {{code}}</title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-row articlediv">
+    <div class="layui-row">
+        <div class="textcont">
+            <h1>An error occured</h1>
+            <p>{{errormsg}}</p>
+            <p style="text-align:center;text-indent:0;color:gray;font-size:15em;">{{code}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+
+{% block nextscript %}{% endblock %}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta id="i18n_pagename" content="login">
+  <title i18nkey='pgtitle'>基督教香港崇真會恩樂園-登錄</title>
+  <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+  <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/login.css') }}">
+  <script src="{{url_for('static',filename='js/jquery-3.4.1.min.js')}}"></script>        
+  <!-- 加载语言包文件 -->
+  <script src="{{url_for('static',filename='js/jquery.i18n.properties.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/i18n-ext.js')}}"></script>
+  <script src="{{url_for('static',filename='js/funcs.js')}}"></script>
+  <style type="text/css">
+    .logintip h1{
+      color: #6abcb4 !important;
+    }
+    .layui-btn-normal{
+      background-color: #6abcb4 !important;
+    }
+    .btn3-xs-abs{
+      color: #6abcb4 !important;
+    }
+    /* .loginbox{
+      background-image: url("./static/img/idcard_background.jpeg") !important;
+      background-repeat: no-repeat;
+      background-position: bottom right;
+      background-size: 100% 100%;
+    } */ 
+    .layui-bg-gray .layui-row{
+      background-image: url("./static/img/main_background_1.jpeg") !important;
+      background-repeat: no-repeat;
+      background-position: bottom center;
+      background-size: 75% 150%;
+    }
+    .layui-bg-gray{
+      background-color: #FFFFFF !important;
+    }
+    .titletip img{
+      width: 83%;
+    }
+    
+  </style>
+</head>
+
+<body>
+
+  <!-- 你的HTML代码 -->
+  <div class="layui-fluid maindiv">
+    <dl class="header-xs-abs userdl dl1-xs-abs">
+      <dt><a class="p-xs btn3-xs-abs" href="javascript:;"><i class="fa fa-globe"><p class="layui-hide-xs">&nbsp;<span i18nkey='lang'>語言</span></p></i></a></dt>
+      <dd>
+          <ul>
+              <li><a class="p-xs" href="javascript:;" onclick="changeLang('zh-TW')" id='lang_zh_tw'>中文繁體</a></li>
+              <li><a class="p-xs" href="javascript:;" onclick="changeLang('en')" id='lang_en'>English</a></li>
+          </ul>
+      </dd>
+  </dl>
+    <div class="layui-row titletip">
+      <img src='./static/img/banner_noBubble.png'/>
+      <h2 i18nkey='title'>基督教香港崇真會恩樂園-登錄</h2>
+    </div>
+    <div class="layui-bg-gray">
+    <div class="layui-row">
+      <div class="layui-card layui-col-xs12 layui-col-sm4 layui-col-sm-offset4 mainpanel">
+        <div class="layui-card-body">
+          <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1 loginbox">
+            <div class="logintip">
+              <h1 i18nkey='title_loginbox'>用戶登錄</h1>
+              <hr class="layui-bg-cyan">
+            </div>
+            <form class="layui-form" action="login" accept-charset="UTF-8" method="POST">
+              {% if errormsg %}
+              <div class="layui-form-item">
+                <label class="layui-form-label errorlabel"><i
+                    class="layui-icon layui-icon-close-fill"></i>{{errormsg}}</label>
+              </div>
+              {% endif %}
+              <div class="layui-form-item">
+                <label class="layui-form-label "><i class="layui-icon layui-icon-username " i18nkey='username'>用戶名</i></label>
+                <input type="text" name="username" required lay-verify="required_i18n" placeholder="請輸入用戶名"
+                  autocomplete="off" class="layui-input" i18nkey='placeholder_un;vmsg' i18nattr='placeholder;validationMessage'>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label"><i class="layui-icon layui-icon-password" i18nkey='passwd'>密碼</i></label>
+                <input type="password" id="passwd" required lay-verify="required_i18n" placeholder="請輸入密碼" autocomplete="off"
+                  class="layui-input" i18nkey='placeholder_pw;vmsg' i18nattr='placeholder;validationMessage'>
+                <input type="hidden" id="passwdmd5" name="passwd_md5" class="layui-input">
+                <input type="hidden" name="secret_key" class="layui-input" value='{{secret["secret_key"]}}'>
+                {% if next_url %}
+                <input type="hidden" name="next_url" class="layui-input" value='{{next_url}}'>
+                {% endif %}
+                <a class="fpw layui-form-label" href="resetpw" i18nkey='resetpw'></a>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn loginbtn layui-btn-radius layui-btn-normal" lay-submit lay-filter="cryptpw"><i class="layui-icon layui-icon-auz"
+                    style="font-size:1em;" i18nkey='login'>登錄</i></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div id="footer">
+    <p>By <span i18nkey='name'>基督教香港崇真會恩樂園</span> 2021. <br />All rights reserved. </p>
+  </div>
+  <script src="{{url_for('static',filename='layui/layui.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static',filename='js/md5.js')}}"></script>
+  <script>
+    var secretstr = '{{secret["secret"]}}';
+    layui.use('form', function () {
+      var form = layui.form;
+      //监听提交
+      form.on('submit(cryptpw)', function (data) {
+        document.getElementById("passwdmd5").value = hex_md5(hex_md5(document.getElementById("passwd").value) + secretstr);
+        return true;
+      });
+      form.verify(verifiesdef);
+    });
+    execI18n();
+  </script>
+</body>
+
+</html>

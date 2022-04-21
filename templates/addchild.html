@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-parentinfo">{% endblock %}
+{% block title %}<title i18nkey='title_addc'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/forms.css') }}">
+<style>
+.statustb tr:nth-child(odd){
+    background-color: #bfb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-card layui-col-xs12 layui-col-sm8 layui-col-sm-offset2 mainpanel">
+    <div class="layui-card-body">
+        <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1 formbox">
+            <div class="formtip">
+                <h1 i18nkey='addctitle'></h1>
+            </div>
+            <form class="layui-form" action="addchild" accept-charset="UTF-8" method="POST">
+                {% if errormsg %}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label errorlabel"><i class="layui-icon layui-icon-close-fill"></i>{{errormsg}}</label>
+                    </div>
+                {% endif %}
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='child_no_n'></span></i></label>
+                    <input type="text" id="child_no" autocomplete="off" required lay-verify="required_i18n" class="layui-input" i18nkey='child_no_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='name_n'></span></i></label>
+                    <input type="text" id="name" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='name_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='name_chi_n'></span></i></label>
+                    <input type="text" id="name_chi" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='name_chi_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-venus-mars">&nbsp;<span i18nkey='gender_n'></span></i></label>
+                    <select id="gender_slt" lay-verify="" lay-filter='gender_slt'>
+                        <option value="1" i18nkey='male' selected></option>
+                        <option value="2" i18nkey='female'></option>
+                    </select>
+                    <input type="hidden" id='gender_id' value='1'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-rebel">&nbsp;<span i18nkey='religion_n'></span></i></label>
+                    <input type="text" id="religion" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='religion_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-id-card-o">&nbsp;<span i18nkey='birth_cert_no_n'></span></i></label>
+                    <input type="text" id="birth_cert_no" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='birth_cert_no_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-birthday-cake">&nbsp;<span i18nkey='born_day_n'></span></i></label>
+                    <input type="text" id="born_day" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='born_day_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-map-marker">&nbsp;<span i18nkey='place_birth_n'></span></i></label>
+                    <input type="text" id="place_birth" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='place_birth_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-compass">&nbsp;<span i18nkey='address_n'></span></i></label>
+                    <input type="text" id="address" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='address_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-birthday-cake">&nbsp;<span i18nkey='date_in_n'></span></i></label>
+                    <input type="text" id="date_in" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='date_in_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-phone">&nbsp;<span i18nkey='tel_n'></span></i></label>
+                    <input type="text" id="tel" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='tel_p' i18nattr='placeholder'>
+                </div>
+                <!--
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-envelope-o">&nbsp;<span i18nkey='email_n'></span></i></label>
+                    <input type="text" id="email" required lay-verify="required_i18n" class="layui-input"  i18nkey='email_p' i18nattr='placeholder'>
+                </div>
+                -->
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-envelope-o">&nbsp;<span i18nkey='email_n'></span></i></label>
+                    <input type="text" id="email" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='email_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-cart-plus">&nbsp;<span i18nkey='caregiver_n'></span></i></label>
+                    <input type="text" id="caregiver" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='caregiver_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-language ">&nbsp;<span i18nkey='lang_n'></span></i></label>
+                    <input type="text" id="lang" required lay-verify="required_i18n" lay-verify="" class="layui-input"  i18nkey='lang_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-venus-mars">&nbsp;<span i18nkey='group_n'></span></i></label>
+                    <select id="group_slt" lay-verify="" lay-filter='group_slt'>
+                        <option value="0" i18nkey='group_0' selected></option>
+                        <option value="1" i18nkey='group_1'></option>
+                        <option value="2" i18nkey='group_2'></option>
+                        <option value="3" i18nkey='group_3'></option>
+                        <option value="4" i18nkey='group_4'></option>
+                        <option value="5" i18nkey='group_5'></option>
+                    </select>
+                    <input type="hidden" id='group_id' value='0'>
+                </div>
+    
+                 <div class="layui-form-item">
+                    <button id='smbtn1' class="layui-btn subbtn" lay-submit lay-filter="sign"><i
+                            class="fa fa-arrow-circle-o-up " style="font-size:1em;">&nbsp;<span i18nkey='submit'></span></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script>
+layui.use('form', function () {
+        var form = layui.form;
+        // select - Gender 
+        form.on('select(gender_slt)', function(data){
+            var _gender = data.value;
+            $($('#gender_id')[0]).val(_gender);
+        });
+        // select - Group 
+        form.on('select(group_slt)', function(data){
+            var _group = data.value;
+            $($('#group_id')[0]).val(_group);
+        });
+        //监听提交
+        form.on('submit(sign)', function (data) {
+            $($('#smbtn1')[0]).attr('disabled',true);
+            var flist=['child_no','name','name_chi','gender_id','religion','birth_cert_no','born_day','place_birth','address','date_in','tel','email','caregiver','lang','group_id'];
+            var keys=[];
+            var params = {
+                'secret_key': getCookie('secret_key')
+            };
+            var flen = flist.length;
+            for(var _fi=0; _fi<flen; _fi++){
+                var ds = $('#'+flist[_fi]);
+                if(ds!=null && ds.length>0){
+                    ds = $(ds[0]);
+                    if(ds.val()!=null && ds.val()!=''){
+                        keys.push(flist[_fi]);
+                        params[flist[_fi]] = ds.val();
+                    }
+                }
+            }
+            keys.push('secret_key');
+            params['keys'] = keys.join(',');
+            params = sign(params);
+            var _ep2 = '/api/children/info';
+            $.ajax({
+                async:true,
+                url:_ep2,
+                type:'POST',
+                data:params,
+                success:function(data){
+                    if(data['code']==0){
+                        alert('Add child successfully!');
+                        window.location.href="/addchild";
+                    }
+                    else{
+                        alert('Add childs failed!\nmsg: '+data['msg']);
+                    }
+                    $($('#smbtn1')[0]).removeAttr('disabled');
+                },
+                error:function(xhr,status,error){
+                    alert('Error: '+status.toString());
+                    $($('#smbtn1')[0]).removeAttr('disabled');
+                }
+            });
+            return false;
+        });
+        //定义验证
+        form.verify(verifiesdef);
+    });
+</script>
+{% endblock %}

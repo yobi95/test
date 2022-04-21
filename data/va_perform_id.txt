@@ -1,0 +1,5 @@
+id;value;value_id
+7000;Normal;正常
+7010;Crying Easily;比平日更容易哭泣
+7020;Sleepy;昏昏欲睡
+7099;Other;其他

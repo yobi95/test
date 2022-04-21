@@ -1,0 +1,86 @@
+.articlediv{
+    margin-top: 20px;
+    padding-bottom: 30px;
+    background: #FAFDFF;
+    border: 1px solid #cadae7;
+    overflow: hidden;
+}
+
+.textcont{
+    padding: 0 10px;
+}
+
+.textcont p{
+    text-align:justify;
+    line-height:1.75em;
+    text-indent:2em;
+}
+
+.textcont h1{
+    width:100%; 
+    color:#2d648f;
+    font-size: 1.5em;
+    border-bottom:1px dotted #ccc;
+    text-align:center;
+}
+
+
+.txtcard{
+    background-color: #FAFDFF;
+    border: 0px solid #000;
+    box-shadow: 3px 3px 5px #666;
+    vertical-align: top;
+    padding: 10px 15px;
+}
+
+.table-container{
+    display: table;
+}
+
+.table-cell{
+    display: table-cell;
+    float: inherit;
+}
+
+.header-xs-abs{
+    position: absolute;
+}
+
+.title-xs-abs{
+    margin-top: 33px;
+    margin-left: 20px;
+    left: 0;
+    font-size: 4em;
+    color: yellow;
+}
+
+.dl1-xs-abs{
+    margin-top: 33px;
+    margin-right: 20px;
+    right: 0;
+    font-size: 48px;
+}
+
+.btn1-xs-abs{
+    right: 0;
+    font-size: 48px;
+}
+
+.btn2-xs-abs{
+    margin-top: 90px;
+    margin-right: 20px;
+    right: 0;
+    font-size: 48px;
+}
+
+.dl2-xs-abs{
+    margin-top: 148px;
+    margin-right: 20px;
+    right: 0;
+    font-size: 48px;
+}
+
+.btn3-xs-abs{
+    right: 0;
+    font-size: 48px;
+}

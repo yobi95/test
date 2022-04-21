@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    {% block langmeta %}<meta id="i18n_pagename" content="base">{% endblock %}
+    {% block title %}<title i18nkey='title_base'>base</title>{% endblock %}
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+    <link rel="stylesheet" href="{{ url_for('static',filename='layui/css/layui.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/base.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <script src="{{url_for('static',filename='js/jquery-3.4.1.min.js')}}"></script>        
+    <!-- 加载语言包文件 -->
+    <script src="{{url_for('static',filename='js/jquery.i18n.properties.min.js')}}"></script>
+    <script src="{{url_for('static',filename='js/i18n-ext.js')}}"></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="layui-fluid maindiv">
+        <div class="layui-row">
+            <div class="headerdiv layui-col-xs12 layui-col-sm10 layui-col-sm-offset1 header-xs">
+                <!--<img src="{{url_for('static',filename='img/logo.jpeg')}}" alt="基督教香港崇真會恩樂園" width="100%" -->
+                <!--h1 class='title layui-hide-xs' i18nkey='name'>基督教香港崇真會恩樂園</h1-->
+                <p><a href=".">
+                <img src="./static/img/logo.jpeg" alt="基督教香港崇真會恩樂園" width="100%">
+                </a></p>
+                <h1 class='title-xs layui-hide-sm layui-hide-md layui-hide-lg'>
+<i class="fa fa-home">&nbsp;<span style="font-size:71%;"></span></i></h1>
+                <div class="titlebtn">
+                    {% if loggeduser %}
+                    <dl class="userdl">
+                        <dt><a class="p-xs" href="javascript:;"><i class="fa fa-user-o"><p class="layui-hide-xs">&nbsp;{{loggeduser}}</p></i></a></dt>
+                        <dd>
+                            <ul>
+                                <li><a class="p-xs" href="userinfo"><i class="fa fa-info-circle">&nbsp;<span i18nkey='userinfo'>用戶資料</span></i></a></li>
+                                <li><a class="p-xs" href="logout"><i class="fa fa-sign-out">&nbsp;<span i18nkey='logout'>用戶登出</span></i></a></li>
+                            </ul>
+                        </dd>
+                    </dl>
+                    {% else %}
+                    <a class="p-xs" href="login"><i class="fa fa-sign-in"><p class="layui-hide-xs">&nbsp;<span i18nkey='login'>登入</span></p></i></a>
+                    {% endif %}
+                    <p>&nbsp;</p>
+                    <dl class="userdl">
+                        <dt><a class="p-xs" href="javascript:;"><i class="fa fa-globe"><p class="layui-hide-xs">&nbsp;<span i18nkey='lang'>語言</span></p></i></a></dt>
+                        <dd>
+                            <ul>
+                                <li><a class="p-xs" href="javascript:;" onclick="changeLang('zh-TW')" id='lang_zh_tw'>繁體中文</a></li>
+                                <li><a class="p-xs" href="javascript:;" onclick="changeLang('en')" id='lang_en'>English</a></li>
+                            </ul>
+                        </dd>
+                    </dl>
+                    
+                </div>
+                
+                <!--
+                <div class="hdiv layui-col-xs12 layui-col-sm8">
+                    <h1>Tsung Tsin Mission of Hong Kong Joyful Place</h1>
+                </div>
+                -->
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1">
+                <ul class="layui-nav" lay-filter="">
+                    <li class="layui-nav-item" id="nav-index"><a href="/" i18nkey='index'>首頁</a></li>
+                    <!--<li class="layui-nav-item" id="nav-about">
+                        <a href="about" i18nkey='about'>关于</a>
+                    </li>
+                    <li class="layui-nav-item" id="nav-contact">
+                        <a href="contact" i18nkey='contact'>联系我们</a>
+                    </li>-->
+                    <!--
+                    {% if loggeduser %}
+                    <li class="layui-nav-item" id="nav-options">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-user"></i>我</a>
+                        <dl class="layui-nav-child"
+                            <dd><a style="color:gray;font-size:0.5em;">{{loggeduser}}</a><hr style="color: gray;" /></dd>
+                            <dd><a href="/mealorder">订餐查询</a></dd>
+                            <dd><a href="/repairorder">报修查询</a></dd>
+                            <dd><a href="/bills">财务查询</a></dd>
+                            <dd><a href="/logout">退出登录</a></dd>
+                        </dl>
+                    </li>
+                    {% else %}
+                    <li class="layui-nav-item" id="nav-options"><a href="/login?next_url={{ next_url | safe }}">登录</a></li>
+                    {% endif %}
+                    -->
+                </ul>
+            </div>
+        </div>
+        <div class="layui-row">
+                <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1">
+                    {% block content %}{% endblock %}
+                </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <hr />
+        <h2><p>By <span i18nkey='name'>Tsung Tsin Mission of Hong Kong Joyful Place</span> 2021. <br />All rights reserved. </p></h2>
+    </div>
+    <script src="{{url_for('static',filename='layui/layui.js')}}"></script>
+    <script>
+        layui.use('element', function () {
+            var element = layui.element;
+        });
+        var thisnavid = {% block thisnav %}"nav-index"{% endblock %};
+        var classval = document.getElementById(thisnavid).getAttribute("class");
+        classval=classval.concat(" layui-this");
+        document.getElementById(thisnavid).setAttribute("class",classval);
+        execI18n();
+    </script>
+    {% block nextscript %}{% endblock %}
+</body>
+
+</html>

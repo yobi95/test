@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-idxparent-parentinfo">{% endblock %}
+{% block title %}<title i18nkey='title_pl'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/statuslist.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="layui-row articlediv">
+    <fieldset class="layui-elem-field">
+        <legend i18nkey='parent'></legend>
+        <span i18nkey='parent_search'></span>
+        <div class="layui-inline">
+            <input class="layui-input" name="keyword" id="myInput" autocomplete="off">
+        </div>
+        <button class="layui-btn" data-type="reload"><span i18nkey='find'></span></button>
+        <label i18nkey='simple_sln'></label>
+        <select class='slt_simple' id="slt_simple" onchange="sltChanged(this.options[this.options.selectedIndex].value)" >
+            <option value="0" i18nkey='all_n'></option>
+            <option value="1" i18nkey='simple_n'></option>
+            <option value="2" i18nkey='chiname_n'></option>
+            <option value="3" i18nkey='name2_n'></option>
+            <option value="4" i18nkey='edu2_n'></option>
+            <option value="5" i18nkey='occupation2_n'></option>
+            <option value="6" i18nkey='tel_n'></option>
+        </select>
+    </fieldset>
+    
+    <div class="tdiv2">
+        <div class="tdiv1">
+            <table id="statuslist" lay-filter="statuslist" class='datatable'></table>
+        </div>
+    </div>
+    
+    <div id="pagebar1"></div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script src="{{ url_for('static',filename='js/layui/layui.js') }}"></script>
+<script>
+//parent search function----------------------------------------------------------------------------------
+        $('.layui-btn').click(function () {
+        var _ip_ep = '/api/users/parent_search';
+        var _params = {
+            'page': _page,
+            'limit': _limit,
+            id: 'store',
+            'search_text': $('.layui-input').val(),
+            'secret_key': getCookie('secret_key'),
+            'keys': 'page,limit,secret_key'
+        }
+        _params = sign(_params);
+        var resdata = null;
+        $.ajax({
+            async: true,
+            url: _ip_ep,
+            type: 'GET',
+            data: _params,
+            success: function (data) {
+                if (data['code'] != 0) {
+                    alert("Error!\n" + data['msg']);
+                    return;
+                }
+                var dlen = data['data'].length;
+                confset_filter_search.data = data['data'];
+                table.render(confset_filter_search);
+                confset2.count = data['count'];
+                laypage.render(confset2);
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + status.toString());
+            }
+        });
+    });
+    //----------------------------------------------------------------------------------
+    var _simple=0;
+    var _page=2;
+    var _limit=100;
+    // 50 change to 100 24/2/2021
+    function sltChanged(val){
+        _simple = val;
+        showdata();
+    }
+    layui.use('element', function () {
+            var element = layui.element;
+        });
+    confset = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false //开启分页
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ //表头
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'username', title: $.i18n.prop('username_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name', title: $.i18n.prop('name_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'child_ids', title: $.i18n.prop('child_ids_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'edu', title: $.i18n.prop('edu_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'occupation', title: $.i18n.prop('occupation_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'tel', title: $.i18n.prop('tel_n'), fixed: 'left',
+                    sort: true
+                }
+                
+            ]
+        ]
+    }
+    confset_simple = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false 
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ 
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'username', title: $.i18n.prop('username_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name', title: $.i18n.prop('name_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                }
+                
+            ]
+        ]
+    }
+    confset_chiname = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false 
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ 
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'child_ids', title: $.i18n.prop('child_ids_n'), fixed: 'left',
+                    sort: true
+                },
+            ]
+        ]
+    }
+    
+    confset_name2 = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false 
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ 
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                
+                {
+                    field: 'name', title: $.i18n.prop('name_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'child_ids', title: $.i18n.prop('child_ids_n'), fixed: 'left',
+                    sort: true
+                },
+            ]
+        ]
+    }
+    confset_edu2 = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false 
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ 
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                },
+                
+                {
+                    field: 'edu', title: $.i18n.prop('edu_n'), fixed: 'left',
+                    sort: true
+                }
+            ]
+        ]
+    }
+    confset_occupation2 = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false 
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ 
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                },
+                
+                {
+                    field: 'occupation', title: $.i18n.prop('occupation_n'), fixed: 'left',
+                    sort: true
+                }
+            ]
+        ]
+    }
+    confset_tel = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false 
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ 
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                },
+                
+                {
+                    field: 'tel', title: $.i18n.prop('tel_n'), fixed: 'left',
+                    sort: true
+                }
+            ]
+        ]
+    }
+    confset_filter_search = {//for parent searching
+        elem: '#statuslist',
+        limit: _limit,
+        page: false,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ //表头
+                {
+                    field: 'name', title: $.i18n.prop('name_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'name_chi', title: $.i18n.prop('name_chi_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'child_ids', title: $.i18n.prop('child_ids_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'edu', title: $.i18n.prop('edu_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'occupation', title: $.i18n.prop('occupation_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'tel', title: $.i18n.prop('tel_n'), fixed: 'left',
+                    sort: true
+                }
+                
+            ]
+        ]
+    }
+    confset2 = {
+            elem: 'pagebar1' //注意，这里的 test1 是 ID，不用加 # 号
+            ,limit:_limit
+            ,count:100
+            ,prev:$.i18n.prop('prev')
+            ,next:$.i18n.prop('next')
+            ,jump: function(obj, first){
+                //obj包含了当前分页的所有参数，比如：
+                _page=obj.curr;
+                _limit=obj.limit;
+                
+                //首次不执行
+                if(!first){
+                //do something
+                showdata();
+                }
+            }
+        }
+    var table =  null;
+    var laypage = null;
+
+    layui.use(['laydate', 'table', 'laypage'], function () {
+        table = layui.table;
+        table.render(confset);
+        var laydate1 = layui.laydate;
+        var laydate2 = layui.laydate;
+        
+        //监听表格行单击事件
+        table.on('row(statuslist)', function (obj) {
+            // to do
+            var id = obj.data['id'];
+            window.location.href = '/alterparent?id='+id.toString();
+            
+        });
+        laypage = layui.laypage;
+        //执行一个laypage实例
+        laypage.render(confset2);
+        showdata();
+    });
+    
+    function showdata(){
+        var _ip_ep = '/api/users/parents';
+        var _params = {
+            'page':_page,
+            'limit':_limit,
+            'simple':_simple,
+            'secret_key': getCookie('secret_key'),
+            'keys': 'page,limit,simple,secret_key'
+        }
+        _params = sign(_params);
+        var resdata = null;
+        $.ajax({
+                async:true,
+                url:_ip_ep,
+                type:'GET',
+                data:_params,
+                success:function(data){
+                    if(data['code']!=0){
+                        alert("Error!\n"+data['msg']);
+                        return ;
+                    }
+                    var dlen = data['data'].length;
+                    if(_simple==1){//for show all data
+                        confset_simple.data = data['data'];
+                        table.render(confset_simple);
+                    }
+                    else if(_simple>1&&_simple<3){//for show simple data
+                        confset_chiname.data = data['data'];
+                        table.render(confset_chiname);
+                    }
+                    
+                    else if(_simple==3){//for show chinese name
+                        confset_name2.data = data['data'];
+                        table.render(confset_name2);
+                    }
+                    else if(_simple==4){//for show english name
+                        confset_edu2.data = data['data'];
+                        table.render(confset_edu2);
+                    }
+                    else if(_simple==5){//for show edu level
+                        confset_occupation2.data = data['data'];
+                        table.render(confset_occupation2);
+                    }
+                    else if(_simple==6){//for show occupation
+                        confset_tel.data = data['data'];
+                        table.render(confset_tel);
+                    }
+                    else{//for show phone number
+                        confset.data = data['data'];
+                        table.render(confset);
+                    }
+                
+                    confset2.count=data['count'];
+                    laypage.render(confset2);
+                },
+                error:function(xhr,status,error){
+                    alert('Error: '+status.toString());
+                }
+            });
+    }
+</script>
+{% endblock %}

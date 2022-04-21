@@ -1,0 +1,6 @@
+id;value;value_id
+4110;Good;良好
+4120;General;一般
+4130;Easy to wake up;未如理想-容易醒
+4140;Not sleep;未如理想-未能入睡
+4199;Other;其他

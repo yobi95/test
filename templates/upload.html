@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-idxadmin">{% endblock %}
+{% block title %}<title i18nkey='title_admin'></title>{% endblock %}
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index_admin.css') }}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<style>
+img {width: 43%; height: auto;}
+.body {border: 2px solid black; padding: 50px; background: url(./static/upload_file/BG.png); background-repeat: repeat; background-size: auto;}
+@media only screen and (max-width:550px){img{ display: none;}}
+</style>
+{% endblock %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Staff Upload</title>
+</head>
+<div class="body">
+<h1><span i18nkey='upload_1'></span></h1>
+<tr></tr>
+<h2><span i18nkey='upload_2'></span></h2>
+<br></br>
+<h3><span i18nkey='upload_3'></span></h3>
+<tr></tr>
+<h3><span i18nkey='upload_5'></span></h3>
+<br></br>
+<form action="" method=post enctype=multipart/form-data class="layui-btn">
+<p><input type=file accept=".png, .jpg, .jpeg" name=file onchange="loadFile(event)">
+<input type=submit value=上傳/Upload class="layui-btn">
+<img id="output" style="position:absolute; top:5px; left:500px">
+</form>
+<script>
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+</script>
+</div>
+{% endblock %}

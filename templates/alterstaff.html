@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-parentinfo">{% endblock %}
+{% block title %}<title i18nkey='title_addp'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/forms.css') }}">
+<style>
+.statustb tr:nth-child(odd){
+    background-color: #bfb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-card layui-col-xs12 layui-col-sm8 layui-col-sm-offset2 mainpanel">
+    <div class="layui-card-body">
+        <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1 formbox">
+            <div class="formtip">
+                <h1 i18nkey='altptitle'></h1>
+            </div>
+            <form class="layui-form" action="addparent" accept-charset="UTF-8" method="POST">
+                {% if errormsg %}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label errorlabel"><i class="layui-icon layui-icon-close-fill"></i>{{errormsg}}</label>
+                    </div>
+                {% endif %}
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='id_n'></span></i></label>
+                    <input type="text" id="id" autocomplete="off" required lay-verify="required_i18n" class="layui-input" readonly value='{{id}}'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='username_n'></span></i></label>
+                    <input type="text" id="username" autocomplete="off" required lay-verify="required_i18n" class="layui-input" i18nkey='username_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='name_n'></span></i></label>
+                    <input type="text" id="name" lay-verify="" class="layui-input"  i18nkey='name_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='name_chi_n'></span></i></label>
+                    <input type="text" id="name_chi" lay-verify="" class="layui-input"  i18nkey='name_chi_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-venus-mars">&nbsp;<span i18nkey='gender_n'></span></i></label>
+                    <select id="gender_slt" lay-verify="" lay-filter='gender_slt'>
+                        <option value="f" i18nkey='female' selected></option>
+                        <option value="m" i18nkey='male'></option>
+                    </select>
+                    <input type="hidden" id='gender' value='f'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-envelope-o">&nbsp;<span i18nkey='email_n'></span></i></label>
+                    <input type="text" id="email" required lay-verify="required_i18n" class="layui-input"  i18nkey='email_p' i18nattr='placeholder'>
+                </div>
+                
+                <div class="layui-form-item">
+                    <button id='smbtn1' class="layui-btn subbtn" lay-submit lay-filter="sign"><i
+                            class="fa fa-arrow-circle-o-up " style="font-size:1em;">&nbsp;<span i18nkey='submit'></span></i></button>
+                </div>
+                <div class="layui-btn">
+                    <button id='deletebtn' class="layui-btn layui-btn-danger"><i
+                            class="fa fa-arrow-circle-o-up " style="font-size:1em;">&nbsp;<span i18nkey='delete'></span></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script>
+//**************************************************** 
+
+ $('.layui-btn').click(function () {
+        var _ip_ep = '/api/users/delete_staff';
+        var _params = {
+            'page': _page,
+            'limit': _limit,
+            id: 'deletebtn',
+            'secret_key': getCookie('secret_key'),
+            'keys': 'page,limit,secret_key'
+        }
+    });
+        
+//****************************************************        
+var _uid = '{{id}}';
+// get data
+var _param1 = {
+    'id':_uid,
+    'secret_key':getCookie('secret_key'),
+    'keys':'id,secret_key'
+}
+var _ep1 = '/api/users/staff';
+_param1 = sign(_param1);
+$.ajax({
+    async:false,
+    url:_ep1,
+    type:'GET',
+    data:_param1,
+    success:function(data){
+        if(data['code']==0 && data['data'].length>0){
+            var _line = data['data'][0];
+            for(_k in _line){
+                var _elem = $('#'+_k);
+                if(_elem!=null && _elem.length>0){
+                    _elem.attr('value',_line[_k]);
+                }
+            }
+            // change gender_slt
+            if('gender' in _line){
+                $("#gender_slt").val(_line['gender']);
+            }
+        }
+        else{
+            if(data['code']!=0){
+                alter('Error! \n'+data['msg']);
+            }
+        }
+    }
+});
+
+layui.use('form', function () {
+        var form = layui.form;
+        // select
+        form.on('select(gender_slt)', function(data){
+            var _gender = data.value;
+            $($('#gender')[0]).val(_gender);
+        });
+        //监听提交
+        form.on('submit(sign)', function (data) {
+            $($('#smbtn1')[0]).attr('disabled',true);
+            // check username
+            var _un_org = $($('#username')[0]).attr('value');
+            var _un = $($('#username')[0]).val();
+            if(_un!=_un_org){
+                var _ep="/api/checkUsername";
+                var _unexists = false;
+                $.ajax({
+                    async:false,
+                    url:_ep,
+                    type:'GET',
+                    data:{'username':_un},
+                    success:function(data){
+                        if(data['code']==0 && data['data'].length>0){
+                            if(data['data'][0]['exists']!=0){
+                                _unexists=true;
+                            }
+                        }
+                    }
+                });
+                if(_unexists){
+                    alert('Username already exists!');
+                    $($('#smbtn1')[0]).removeAttr('disabled');
+                    return false;
+                }
+            }
+            
+            var flist=['username','name','name_chi','gender','email','group_id'];
+            var keys=['id'];
+            var params = {
+                'id':_uid,
+                'secret_key': getCookie('secret_key')
+            };
+            var flen = flist.length;
+            for(var _fi=0; _fi<flen; _fi++){
+                var ds = $('#'+flist[_fi]);
+                if(ds!=null && ds.length>0){
+                    ds = $(ds[0]);
+                    if(ds.val()!=null && ds.val().length>0){
+                        keys.push(flist[_fi]);
+                        params[flist[_fi]] = ds.val();
+                    }
+                }
+            }
+            keys.push('secret_key');
+            params['keys'] = keys.join(',');
+            params = sign(params);
+            var _ep2 = '/api/users/staff';
+            $.ajax({
+                async:true,
+                url:_ep2,
+                type:'PUT',
+                data:params,
+                success:function(data){
+                    if(data['code']==0){
+                        alert('Alter staff successfully!');
+                        window.location.href="/stafflist";
+                    }
+                    else{
+                        alert('Alter staffdd failed!\nmsg: '+data['msg']);
+                    }
+                    $($('#smbtn1')[0]).removeAttr('disabled');
+                },
+                error:function(xhr,status,error){
+                    alert('Error: '+status.toString());
+                    $($('#smbtn1')[0]).removeAttr('disabled');
+                }
+            });
+            return false;
+        });
+        //定义验证
+        form.verify(verifiesdef);
+    });
+</script>
+{% endblock %}

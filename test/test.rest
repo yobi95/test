@@ -1,0 +1,74 @@
+# constants
+@ep=http://localhost:5000/api
+@opdir=./test_rest
+
+###
+# getSecret
+GET {{ep}}/getSecret
+
+###
+# login
+POST {{ep}}/login
+Content-Type: application/x-www-form-urlencoded
+
+username=admin
+&passwd_md5=f4d23646b3648e78e650bdd2147858a4
+&secret_key=kqz7ic8WUoq/DT55
+
+###
+# logout
+POST {{ep}}/logout
+Content-Type: application/x-www-form-urlencoded
+
+secret_key=kqz7ic8WUoq/DT55
+&keys=secret_key
+&sign=45843aadf5bf5bfe8d14826bdf6512eb
+
+###
+# checkUsername
+GET {{ep}}/checkUsername?username=admin
+
+###
+# 
+POST {{ep}}/users/parent
+
+###
+GET {{ep}}/users/staff
+
+###
+GET {{ep}}/users/parent
+
+###
+GET {{ep}}/users/parents
+
+###
+GET {{ep}}/users/staffs
+###
+GET {{ep}}/checkUsername
+
+###
+GET {{ep}}/condition
+
+###
+GET {{ep}}/group
+
+###
+GET {{ep}}/meal_type
+
+###
+GET {{ep}}/diaper_status
+
+###
+GET {{ep}}/health_status
+
+###
+GET {{ep}}/nap_status
+
+###
+GET {{ep}}/perform_detail
+
+###
+GET {{ep}}/sendmail
+
+### 
+GET {{ep}}/file?id=12

@@ -1,0 +1,11 @@
+id;value;value_chi
+2000;Normal;正常
+2010;Pale;蒼白
+2020;Reddish;泛紅
+2030;Rash;皮疹
+2040;Skin infections;皮膚感染
+2050;Swelling;腫脹
+2060;Bruise;瘀傷
+2070;Itch;痕癢
+2080;Damage;損痕
+2099;Other;其他
