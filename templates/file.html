@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base">{% endblock %}
+{% block title %}<title i18nkey='title_file'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/forms.css') }}">
+<style>
+.statustb tr:nth-child(odd){
+    background-color: #bfb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-card layui-col-xs12 layui-col-sm8 layui-col-sm-offset2 mainpanel">
+    <div class="layui-card-body">
+        <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1 formbox">
+            <div class="formtip">
+                <h1 i18nkey='filetitle'></h1>
+            </div>
+            <form class="layui-form" action="addstaff" accept-charset="UTF-8" method="POST">
+                {% if errormsg %}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label errorlabel"><i class="layui-icon layui-icon-close-fill"></i>{{errormsg}}</label>
+                    </div>
+                {% endif %}
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='id_n'></span></i></label>
+                    <input type="text" id="id" value='{{fid}}' class="layui-input" i18nkey='id_p' i18nattr='placeholder' readonly>
+                </div>
+                
+                <div class="layui-form-item">
+                    <button id='btndel' class="layui-btn layui-btn-danger subbtn" lay-submit lay-filter="btndel"><span i18nkey='btndel'></span></button>
+                </div>
+                <div class="layui-form-item">
+                    <button id='btndl' class="layui-btn subbtn" lay-submit lay-filter="btndl"><span i18nkey='btndl'></span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script>
+var _fid = '{{fid}}';
+layui.use('form', function () {
+        var form = layui.form;
+        //监听提交
+        form.on('submit(btndel)', function (data) {
+            $($('#btndel')[0]).attr('disabled',true);
+            var keys=['id'];
+            var params = {
+                'id':_fid,
+                'secret_key': getCookie('secret_key')
+            };
+            keys.push('secret_key');
+            params['keys'] = keys.join(',');
+            params = sign(params);
+            var _ep2 = '/api/file';
+            $.ajax({
+                async:true,
+                url:_ep2,
+                type:'DELETE',
+                data:params,
+                success:function(data){
+                    if(data['code']==0){
+                        alert('Delete file successfully!');
+                        window.location.href='/filelist';
+                    }
+                    else{
+                        alert('Delete file failed!\nmsg: '+data['msg']);
+                    }
+                    $($('#btndel')[0]).removeAttr('disabled');
+                },
+                error:function(xhr,status,error){
+                    alert('Error: '+status.toString());
+                    $($('#btndel')[0]).removeAttr('disabled');
+                }
+            });
+            return false;
+        });
+        form.on('submit(btndl)', function (data) {
+            var keys=['id'];
+            var params = {
+                'id':_fid,
+                'secret_key': getCookie('secret_key')
+            };
+            keys.push('secret_key');
+            params['keys'] = keys.join(',');
+            params = sign(params);
+            var _ep2 = '/api/file';
+            window.location.href = _ep2+"?"+$.param(params);
+            return false;
+        });
+        //定义验证
+        form.verify(verifiesdef);
+    });
+</script>
+{% endblock %}

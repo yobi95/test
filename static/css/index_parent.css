@@ -1,0 +1,57 @@
+
+.timebox{
+    float: left;
+}
+.aliasbq{
+    position: relative;
+}
+
+.aliasp{
+    display: inline-block;
+
+}
+.infobtn{
+    display: inline-block;
+    background-color: #1e9fff;
+    color: white;
+    border-radius: 3px;
+    padding: 6px;
+    line-height: 1em;
+    float: right;
+    vertical-align: middle;
+}
+
+
+.infobtn:hover{
+    opacity: .8;
+    color: #fff;
+}
+
+.warning{
+    background-color: red;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px grey ;
+}
+.statustb{
+    width: 100%;
+    color: black;
+}
+
+.statustb td:nth-child(odd){
+    width: 50%;
+}
+.statustb td:nth-child(even){
+    width: 50%;
+}
+
+.infotitle{
+    text-align: center;
+}
+
+.subtn{
+    color: #555;
+}
+
+.statusdiv{
+    margin-top: 10px;
+}

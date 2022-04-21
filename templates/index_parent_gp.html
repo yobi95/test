@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-idxparent">{% endblock %}
+{% block title %}<title i18nkey='title_parent'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index_parent.css') }}">
+{% endblock %}
+{% block content %}
+</br>
+<div class="layui-row articlediv">
+    <fieldset class="layui-elem-field">
+        <legend i18nkey='qlegend'></legend>
+        </br>
+<ul class="layui-nav" lay-filter="indexparent">
+  <li class="layui-nav-item"><a href="childlist_parent" i18nkey='parent_index_1'></a></li>
+  <li class="layui-nav-item"><a href="common" i18nkey='parent_index_2'></a></li>
+  <li class="layui-nav-item">
+    <a href="javascript:;" i18nkey='parent_index_3'></a>
+    <dl class="layui-nav-child">
+      <dd><a href="contactus" i18nkey='parent_index_4'></a></dd>
+      <dd><a href="https://web.ttmssd.org/services/child/jp" i18nkey='parent_index_5'></a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item">
+    <a href="javascript:;" i18nkey='parent_index_6'></a>
+    <dl class="layui-nav-child">
+      <dd><a href="resetpw" i18nkey='parent_index_8'></a></dd>
+    </dl>
+  </li>
+</ul>
+
+<!-- 统计信息 -->
+<div class="layui-row articlediv">
+        {% if status and status['code']==0 %}
+        {% for _cs in status['data'] %}
+    <div class="layui-row">
+        <blockquote class="layui-elem-quote aliasbq">
+            <span class='aliasp'>{{_cs['alias']}}</span>
+            <!-- Diable in production for Debug Start -->
+            <!-- <a class='infobtn' href="childinfo?id={{_cs['id']}}" i18nkey='jump2info'></a>--> 
+            <!-- Diable in production for Debug End -->
+        </blockquote>
+        <div id="info-{{_cs['id']}}" class="statusdiv layui-col-xs12 layui-col-sm8 layui-col-sm-offset2">
+            <div class='infotitle'>
+                <h2 i18nkey='tabletitle'></h2>
+                <br />
+            </div>
+            <!-- name -->
+            <table class='layui-table statustb'>
+                <tr><td i18nkey='alias'></td><td>{{_cs['child_no']}}</td></tr>
+                <tr><td i18nkey='name2'></td><td>{{_cs['name']}}</td></tr>
+                <tr><td i18nkey='namechs'></td><td>{{_cs['name_chi']}}</td></tr>
+            </table>
+        </div>
+    </div>
+        {% endfor %}
+        {% endif %}
+</div>
+<!-- <img src="{{ url_for('pg_index.download_file', filename='/19/skin-22/19-22-2140-2400.png') }}"/> -->
+
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script src="{{ url_for('static',filename='js/layui/layui.js') }}"></script>
+<script>
+    var startt = null;
+    var endt = null;
+    var statustype='temperature';
+    
+    // show status
+    {% if status and status['code']==0 %}
+    cstatus = {{status['data']|tojson}};
+    var cslen = cstatus.length;
+    //console.log(JSON.stringify(cstatus[0]));
+    //console.log(JSON.stringify(cstatus[1]));
+    for(var csi=0; csi<cslen; csi++){
+        var _cid = cstatus[csi]['id'].toString();
+        var _div = $('#info-'+_cid)[0];
+        var _csid = cstatus[csi]['data']['data'];
+        var csjlen = _csid.length;
+        for(var csj=0; csj<csjlen; csj++){
+            var _line = _csid[csj];
+            // table
+            var _tb = $("<table class='layui-table statustb'></table>");
+            //console.log(_tb);
+            // tr
+            var statusname = $.i18n.prop(_line['type']+'_sn');
+            //console.log("_line['status']: " + _line['status']);
+            //console.log("_line['status']: " + _line['type']);
+            $(_div).append('<br />');
+            $(_div).append($('<h3 class="subtn"></h3>').text(statusname));
+            var _tr = $("<tr></tr>");
+            var _td = $("<td></td>");
+            // time
+            if(_line['time']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text($.i18n.prop('time')));
+                _tr1.append(_td.clone().text(_line['time']));
+                _tb.append(_tr1);
+            }
+            // status
+            if(_line['status']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text(statusname));
+
+                if(_line['type']=='temperature'){
+                    _tr1.append(_td.clone().text(_line['status'].toString()));
+                }
+                else{
+                    // 根據語言選擇
+                    var _svn = 'val';
+                    switch(i18nLanguage){
+                        case 'en':
+                            _svn = 'val';
+                            break;
+                        case 'zh-TW':
+                            _svn = 'val_chi';
+                            break;
+                    }
+                    _tr1.append(_td.clone().text(_line['status'][_svn]));
+                }
+                
+                // show warning
+                var _w = false;
+                switch(_line['type']){
+                    case 'nap':
+                        break;
+                    case 'diaper':
+                        break;
+                    case 'skin':
+                        if(_line['status']['id']!=2000){
+                            _tr1.addClass('warning');
+                        }
+                        break;
+                    case 'health':
+                        if(_line['status']['id']!=6000){
+                            _tr1.addClass('warning');
+                        }
+                        break;
+                    case 'temperature':
+                        if(_line['status']>37){
+                            _tr1.addClass('warning');
+                        }
+                        break;
+                    case 'meal':
+                        break;
+                    case 'perform':
+                        /*if(_line['status']['id']!=0 && _line['status']['id']!=2){
+                            _tr1.addClass('warning');
+                        }*/
+                        break;
+                    default:
+                        if(_line['status']['id']!=0){
+                            _tr1.addClass('warning');
+                        }
+                        break;
+                }
+                _tb.append(_tr1);
+            }
+            
+            // substatus
+            if(_line['substatus']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text($.i18n.prop('substatus_show')));
+                
+                // 根據語言選擇
+                var _svn = 'val';
+                switch(i18nLanguage){
+                    case 'en':
+                        _svn = 'val';
+                        break;
+                    case 'zh-TW':
+                        _svn = 'val_chi';
+                        break;
+                }
+                if(_line['type']!='meal'){
+                    _tr1.append(_td.clone().text(_line['substatus'][_svn]));
+                }else{
+                    _tr1.append(_td.clone().text(_line['substatus'].toString()));
+                }
+                _tb.append(_tr1);
+            }
+            
+            // substatus_detail
+            if(_line['substatus_detail']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text($.i18n.prop('substatus_detail_show')));
+
+                // 根據語言選擇
+                var _svn = 'val';
+                switch(i18nLanguage){
+                    case 'en':
+                        _svn = 'val';
+                        break;
+                    case 'zh-TW':
+                        _svn = 'val_chi';
+                        break;
+                }
+                _tr1.append(_td.clone().text(_line['substatus_detail'][_svn]));
+                _tb.append(_tr1);
+            }
+
+            // count
+            if(_line['count']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text($.i18n.prop('count')));
+                _tr1.append(_td.clone().text(_line['count'].toString()));
+                _tb.append(_tr1);
+            }
+            // staff
+            if(_line['staff']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text($.i18n.prop('staff')));
+                _tr1.append(_td.clone().text(_line['staff']));
+                _tb.append(_tr1);
+            }
+            // remark
+            if(_line['remark']){
+                var _tr1 = _tr.clone();
+                _tr1.append(_td.clone().text($.i18n.prop('remark')));
+                _tr1.append(_td.clone().text(_line['remark']));
+                _tb.append(_tr1);
+            }
+            $(_div).append(_tb);
+        }
+    }
+    {% endif %}    
+    
+    {% if secret %}
+    //localStorage.clear();
+    //https://web.ttmssd.org/services/child/jp
+    localStorage.removeItem("sc");
+    localStorage.setItem("sc","{{secret}}");
+    {% endif %}
+
+</script>
+{% endblock %}

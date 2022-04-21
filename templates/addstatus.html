@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-idxparent">{% endblock %}
+{% block title %}<title i18nkey='title_adds'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/forms.css') }}">
+<style>
+.statustb tr:nth-child(odd){
+    background-color: #bfb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-card layui-col-xs12 layui-col-sm8 layui-col-sm-offset2 mainpanel">
+    <div class="layui-card-body">
+        <div class="layui-col-xs12 layui-col-sm10 layui-col-sm-offset1 formbox">
+            <div class="formtip">
+                <h1 i18nkey='insert{{type}}'></h1>
+            </div>
+            <form class="layui-form" action="addstatus" accept-charset="UTF-8" method="POST">
+                {% if errormsg %}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label errorlabel"><i class="layui-icon layui-icon-close-fill"></i>{{errormsg}}</label>
+                    </div>
+                {% endif %}
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-user-o">&nbsp;<span i18nkey='alias'></span></i></label>
+                    <input type="text" id="alias" autocomplete="off" required lay-verify="required_i18n" class="layui-input" i18nkey='alias_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="fa fa-hourglass-start ">&nbsp;<span i18nkey='{{type}}_n'></span></i></label>
+                    <input type="hidden" id="temperature" lay-verify="" class="layui-input"  i18nkey='temp_p' i18nattr='placeholder'>
+                    <select id="status" lay-verify="" lay-filter='status'>
+                    </select>
+                </div>
+                <div class="layui-form-item" id='countdiv'>
+                    <label class="layui-form-label"><i class="fa fa-superscript">&nbsp;<span i18nkey='count'></span></i></label>
+                    <input type="text" id="count" lay-verify="" class="layui-input"  i18nkey='count_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item" id='remarkdiv'>
+                    <label class="layui-form-label"><i class="fa fa-graduation-cap">&nbsp;<span i18nkey='remark'></span></i></label>
+                    <input type="text" id="remark" lay-verify="" class="layui-input"  i18nkey='remark_p' i18nattr='placeholder'>
+                </div>
+                <div class="layui-form-item">
+                    <button id='smbtn1' class="layui-btn subbtn" lay-submit lay-filter="sign"><i
+                            class="fa fa-arrow-circle-o-up " style="font-size:1em;">&nbsp;<span i18nkey='submit'></span></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script>
+var _type = '{{type}}';
+var _status_id = 0;
+var flist = {
+    'alias':'alias',
+    'status':'status',
+    'count':'count',
+    'remark':'remark'
+}
+
+// hide according to type
+if(_type=='temperature'){
+    $('#status').remove();
+    $('#countdiv').remove();
+    $('#remarkdiv').remove();
+    $($('#temperature')[0]).attr('type', 'text');
+    flist['status'] = 'temperature';
+    delete flist['count'];
+    delete flist['remark'];
+}
+if(_type=='skin'){
+    flist['status'] = 'condition_id';
+    var _as_ep = '/api/va_condition_id';
+    defStatusSlt(_as_ep)
+}
+if(_type=='meal'){
+    flist['status'] = 'meal_id';
+    flist['qty'] = 'qty';
+    flist['qty_unit'] = 'qty_unit';
+    flist['count'] = 'count';
+    var _as_ep = '/api/va_meal_id';
+    defStatusSlt(_as_ep)
+}
+if(_type=='nap'){
+    flist['status'] = 'nap_id';
+    delete flist['count'];
+    $('#countdiv').remove();
+    var _as_ep = '/api/va_nap_id';
+    defStatusSlt(_as_ep)
+}
+if(_type=='diaper'){
+    flist['status'] = 'diaper_id';
+    var _as_ep = '/api/va_diaper_id';
+    defStatusSlt(_as_ep)
+}
+if(_type=='health'){
+    flist['status'] = 'health_id';
+    var _as_ep = '/api/va_health_id';
+    defStatusSlt(_as_ep)
+}
+if(_type=='perform'){
+    flist['status'] = 'perform_id';
+    delete flist['count'];
+    $('#countdiv').remove();
+    var _as_ep = '/api/va_perform_id';
+    defStatusSlt(_as_ep)
+}
+
+function defStatusSlt(ep){
+    $.ajax({
+        async:false,
+        url:ep,
+        type:'GET',
+        success:function(data){
+            if(data['code']==0){
+                var _slt = $($('#status')[0]);
+                var _opt = $('<option></option>');
+                var _kn = 'val';
+                if(i18nLanguage=='zh-TW'){
+                    _kn='val_chi';
+                }
+                var dlen=data['data'].length;
+                for(var di =0; di<dlen; di++){
+                    var _opt1 = _opt.clone();
+                    _opt1.attr('value', data['data'][di]['id']);
+                    _opt1.text(data['data'][di][_kn]);
+                    _slt.append(_opt1);                    
+                }
+            }
+            else{
+                alert('Get selectors failed!\nmsg: '+data['msg']);
+            }
+        },
+        error:function(xhr,status,error){
+            alert('Error: '+status.toString());
+        }
+    });
+}
+layui.use('form', function () {
+    var form = layui.form;
+    // select
+    form.on('select(status)', function(data){
+        _status_id = data.value;
+    });
+    //监听提交
+    form.on('submit(sign)', function (data) {
+        $($('#smbtn1')[0]).attr('disabled',true);
+        if(_type=='temperature'){
+            _status_id = $($('#temperature')[0]).val();
+        }
+        var keys=[flist['status']];
+        var params = {
+            'secret_key': getCookie('secret_key')
+        };
+        params[flist['status']]=_status_id;
+        for(var _k in flist){
+            if(flist[_k]=='status'){
+                continue;
+            }
+            var ds = $('#'+_k);
+            if(ds!=null && ds.length>0){
+                ds = $(ds[0]);
+                if(ds.val()!=null && ds.val()!=''){
+                    keys.push(flist[_k]);
+                    params[flist[_k]] = ds.val();
+                }
+            }
+        }
+        keys.push('secret_key');
+        params['keys'] = keys.join(',');
+        params = sign(params);
+        var _ep2 = '/api/status/'+_type;
+        $.ajax({
+            async:true,
+            url:_ep2,
+            type:'POST',
+            data:params,
+            success:function(data){
+                if(data['code']==0){
+                    alert('Add status successfully!');
+                }
+                else{
+                    alert('Add status failed!\nmsg: '+data['msg']);
+                }
+                $($('#smbtn1')[0]).removeAttr('disabled');
+            },
+            error:function(xhr,status,error){
+                alert('Error: '+status.toString());
+                $($('#smbtn1')[0]).removeAttr('disabled');
+            }
+        });
+        return false;
+    });
+    //定义验证
+    form.verify(verifiesdef);
+});
+</script>
+{% endblock %}

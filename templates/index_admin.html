@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-idxadmin">{% endblock %}
+{% block title %}<title i18nkey='title_admin'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index_admin.css') }}">
+  <style type="text/css">
+    .servbtn-icon{
+      color: #6abcb4 !important;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-row articlediv">
+    <div class="layui-row">
+        <div class="layui-btn-container btncont">
+            <div class="wdef">
+                <a href="addparent" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-paypal servbtn-icon"  ></span></p>
+                    <p class="servbtn-p" i18nkey='add_p'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="parentlist" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-paypal servbtn-icon"  ></span></p>
+                    <p class="servbtn-p" i18nkey='up_p'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="addchild" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-child servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='add_c'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="childlist" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-child servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='up_c'></p>
+                </a>
+            </div>
+            <!--<div class="wdef">
+                <a href="statuslist" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-hourglass-start servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='up_status'></p>
+                </a>
+            </div>-->
+            
+            <!--<div class="wdef">
+                <a href="recommend" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-flag servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='up_show_recommend'></p>
+                </a>
+            </div>-->
+            {% if role == "admin" %}
+            <div class="wdef">
+                <a href="addstaff" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-briefcase servbtn-icon"  ></span></p>
+                    <p class="servbtn-p" i18nkey='add_s'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="stafflist" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-briefcase servbtn-icon"  ></span></p>
+                    <p class="servbtn-p" i18nkey='up_s'></p>
+                </a>
+            </div>
+            
+            <div class="wdef">
+                <a href="export_excel" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-table servbtn-icon"  ></span></p>
+                    <p class="servbtn-p" i18nkey='export_excel'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="export_excel_parent_child" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-table servbtn-icon"  ></span></p>
+                    <p class="servbtn-p" i18nkey='export_excel_parent_child'></p>
+                </a>
+            </div>
+            {% endif %}
+            <!--<div class="wdef">
+                <a href="addstatus?type=health" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-stethoscope servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='healthchk'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="addstatus?type=skin" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-search servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='skinchk'></p>
+                </a>
+            </div>
+            
+            <div class="wdef">
+                <a href="addstatus?type=temperature" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-thermometer-half servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='tempchk'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="addstatus?type=meal" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-cutlery servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='mealtoday'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="addstatus?type=nap" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-bed servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='naptoday'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="addstatus?type=diaper" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-tint servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='diaper'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="addstatus?type=perform" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-users servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='perform'></p>
+                </a>
+            </div>
+            <div class="wdef">
+                <a href="filelist" class="layui-btn layui-btn-primary servbtn">
+                    <p><span class="fa fa-file-pdf-o servbtn-icon" ></span></p>
+                    <p class="servbtn-p" i18nkey='filemng'></p>
+                </a>
+            </div>
+            -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script>
+
+{% if secret %}
+//localStorage.clear();
+localStorage.removeItem("sc");
+localStorage.setItem("sc","{{secret}}");
+{% endif %}
+</script>
+{% endblock %}

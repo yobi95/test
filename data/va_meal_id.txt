@@ -1,0 +1,7 @@
+id;value;value_chi
+3010;Milk formula;奶粉配方
+3020;Breastmilk;母乳
+3030;Rice cereal;米糊
+3040;Gruel;稀粥
+3050;Arrange by menu;按餐單安排
+3099;Other;其他

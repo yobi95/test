@@ -1,0 +1,9 @@
+id;value;value_chi
+5100;Normal;正常
+5110;Yellowish;偏黃
+5120;Bloody;帶血
+5200;Normal;正常
+5210;Constipation;便秘
+5220;Water-based;稀水便
+5230;Acidic;大便帶酸
+5240;Stench;有惡臭

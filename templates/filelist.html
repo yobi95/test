@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block langmeta %}<meta id="i18n_pagename" content="base-staffinfo">{% endblock %}
+{% block title %}<title i18nkey='title_fl'></title>{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/index.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/statuslist.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="layui-row articlediv">
+    
+    <div class="tdiv2">
+        <div class="tdiv1">
+            <table id="statuslist" lay-filter="statuslist" class='datatable'></table>
+        </div>
+    </div>
+
+    <a href="upfile" class="layui-btn layui-btn-normal" style="width: 100%;" i18nkey='upfile'></a>
+    
+    <div id="pagebar1"></div>
+</div>
+{% endblock %}
+{% block thisnav %}"nav-index"{% endblock %}
+{% block nextscript %}
+<script src="{{ url_for('static',filename='js/md5.js') }}"></script>
+<script src="{{ url_for('static',filename='js/funcs.js') }}"></script>
+<script src="{{ url_for('static',filename='js/layui/layui.js') }}"></script>
+<script>
+    var _page=1;
+    var _limit=10;
+    layui.use('element', function () {
+            var element = layui.element;
+        });
+    confset = {
+        elem: '#statuslist',
+        limit: _limit,
+        page: false //开启分页
+        ,
+        limits: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        cols: [
+            [ //表头
+                {
+                    field: 'id', title: $.i18n.prop('id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'child_id', title: $.i18n.prop('child_id_n'), fixed: 'left',
+                    sort: true
+                },
+                {
+                    field: 'filename', title: $.i18n.prop('filename_n'), fixed: 'left',
+                    sort: true
+                }
+            ]
+        ]
+    }
+    confset2 = {
+            elem: 'pagebar1' //注意，这里的 test1 是 ID，不用加 # 号
+            ,limit:_limit
+            ,count:100
+            ,prev:$.i18n.prop('prev')
+            ,next:$.i18n.prop('next')
+            ,jump: function(obj, first){
+                //obj包含了当前分页的所有参数，比如：
+                _page=obj.curr;
+                _limit=obj.limit;
+                
+                //首次不执行
+                if(!first){
+                //do something
+                showdata();
+                }
+            }
+        }
+    var table =  null;
+    var laypage = null;
+
+    layui.use(['laydate', 'table', 'laypage'], function () {
+        table = layui.table;
+        table.render(confset);
+        var laydate1 = layui.laydate;
+        var laydate2 = layui.laydate;
+        //监听表格行单击事件
+        table.on('row(statuslist)', function (obj) {
+            // to do
+            var id = obj.data['id'];
+            window.location.href = '/file?id='+id.toString();
+        });
+        laypage = layui.laypage;
+        //执行一个laypage实例
+        laypage.render(confset2);
+        showdata();
+    });
+    
+    function showdata(){
+        var _ip_ep = '/api/files';
+        var _params = {
+            'page':_page,
+            'limit':_limit,
+            'secret_key': getCookie('secret_key'),
+            'keys': 'page,limit,secret_key'
+        }
+        _params = sign(_params);
+        var resdata = null;
+        $.ajax({
+                async:true,
+                url:_ip_ep,
+                type:'GET',
+                data:_params,
+                success:function(data){
+                    if(data['code']!=0){
+                        alert("Error!\n"+data['msg']);
+                        return ;
+                    }
+                    confset.data = data['data'];
+                    table.render(confset);
+                    confset2.count=data['count'];
+                    laypage.render(confset2);
+                },
+                error:function(xhr,status,error){
+                    alert('Error: '+status.toString());
+                }
+            });
+    }
+</script>
+{% endblock %}

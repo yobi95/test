@@ -1,0 +1,63 @@
+version: "3"
+services:
+  web:
+    image: itp4121ea
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+    ports:
+      - 5000:5000
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      SECRET_KEY: my-secret-key
+      MAIL_SERVER: mailhog
+      MAIL_PORT: 1025
+      DATABASE_URL: mysql ://localhost:3306/childsystem
+    networks:
+      - webnet
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - 3306:3306
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+
+  db:
+    image: mysql/mysql-server:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: childsystem
+      MYSQL_USER: root
+      MYSQL_PASSWORD: P@ssw0rd
+    networks:
+      - webnet
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - webnet
+
+networks:
+  webnet:

@@ -1,0 +1,76 @@
+.mainpanel {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .formbox {
+    background-color: #fff;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  .formtip {
+    text-align: center;
+  }
+
+  .formtip h1 {
+    color: green;
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+
+  .layui-form-label {
+    text-align: left;
+    padding-left: 5%;
+    width: auto;
+  }
+  
+  .errorlabel {
+    text-align: left;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 0;
+    width: auto;
+    color: red;
+    border: 1px solid red;
+  }
+  
+  .fa {
+    display: inline;
+  }
+  
+  .layui-fluid {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .layui-input {
+    display: inline;
+    width: 90%;
+  }
+
+  .layui-textarea {
+    display: inline;
+    width: 90%;
+  }
+  
+  .subbtn {
+    width: 90%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .delbtn {
+    width: 90%;
+    padding-left: 5%;
+    margin-bottom: 20px;
+    vertical-align: middle;
+  }
+  
+  .layui-form-item {
+    text-align: center;
+  }
+  
+  button:disabled{
+    background-color: grey;
+  }

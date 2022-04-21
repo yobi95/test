@@ -1,0 +1,7 @@
+id;value;value_chi
+2100;Head;頭部
+2110;Left Hand;左手
+2120;Right Hand;右手
+2130;Left Leg;左腿
+2140;Right Leg;右腿
+2150;Body;身軀
