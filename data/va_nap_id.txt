@@ -1,3 +1,0 @@
-id;value;value_chi
-4010;Nap;開始
-4020;Waked up;醒來

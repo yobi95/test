@@ -1,8 +1,0 @@
-id;value;value_chi
-6100;Cough;咳嗽
-6110;Severe cough;嚴重咳嗽
-6120;Rapid breathing;呼吸急速
-6130;Throat red;喉嚨紅
-6200;Light color;淺色
-6210;Yellow;黃色
-6220;Green;綠色

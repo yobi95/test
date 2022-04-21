@@ -1,4 +1,0 @@
-id;value;value_chi
-5000;Pee;小便
-5010;Poop;大便
-5099;Other;其他

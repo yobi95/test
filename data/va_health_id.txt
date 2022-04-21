@@ -1,5 +1,0 @@
-id;value;value_chi
-6000;Normal;正常
-6010;Cough;咳嗽
-6020;Runny nose;鼻水
-6099;Other;其他
